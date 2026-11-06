@@ -1,6 +1,15 @@
+import os
+
 from .base import *  # noqa: F401,F403
 
 DEBUG = False
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+CSRF_TRUSTED_ORIGINS = ["https://*.vercel.app"]
+
+vercel_url = os.getenv("VERCEL_URL")
+if vercel_url:
+    SITE_URL = f"https://{vercel_url}"
 
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
