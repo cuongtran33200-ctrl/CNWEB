@@ -28,7 +28,7 @@ Frontend và backend được tách thư mục rõ ràng trong cùng một proje
 | Thành phần | Công nghệ |
 |---|---|
 | Backend | Python 3.11, Django 5.2 |
-| Database | MariaDB 10.11 (tương thích MySQL), driver `mysqlclient` |
+| Database | MariaDB 10.11 (tương thích MySQL), driver `PyMySQL` |
 | Frontend | Django Templates, Bootstrap 5, crispy-forms |
 | Soạn thảo | django-tinymce |
 | Ảnh | Pillow |
