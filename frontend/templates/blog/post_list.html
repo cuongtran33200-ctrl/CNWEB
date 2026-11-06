@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} — SBCB Blog{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-head">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ page_title }}</li>
+            </ol>
+        </nav>
+        <h1>{{ page_title }}</h1>
+        {% if page_description %}
+            <p>{{ page_description }}</p>
+        {% endif %}
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="row g-4">
+                {% for post in posts %}
+                    <div class="col-md-6">
+                        {% include "partials/_post_card.html" %}
+                    </div>
+                {% empty %}
+                    <div class="col-12">
+                        <div class="empty-state">
+                            <i class="bi bi-inbox"></i>
+                            <h2>Không có bài viết</h2>
+                            <p>
+                                {% if query %}
+                                    Không tìm thấy bài viết nào phù hợp với từ khoá "<strong>{{ query }}</strong>".
+                                {% else %}
+                                    Chưa có bài viết nào trong mục này.
+                                {% endif %}
+                            </p>
+                            <a href="{% url 'blog:post_list' %}" class="btn btn-primary btn-sm">Xem tất cả bài viết</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {% include "partials/_pagination.html" %}
+        </div>
+        <aside class="col-lg-4">
+            {% include "partials/_sidebar.html" %}
+        </aside>
+    </div>
+</div>
+{% endblock %}

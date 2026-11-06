@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Không có quyền truy cập — SBCB Blog{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center text-center">
+        <div class="col-lg-7">
+            <div class="display-1 fw-bold text-warning">403</div>
+            <h1 class="h3 mt-2">Không có quyền truy cập</h1>
+            <p class="text-muted">Tài khoản của bạn không được phép thực hiện thao tác này.</p>
+            <div class="d-flex justify-content-center gap-2 mt-4">
+                <a href="{% url 'home' %}" class="btn btn-primary">Về trang chủ</a>
+                <a href="{% url 'accounts:login' %}" class="btn btn-outline-secondary">Đăng nhập tài khoản khác</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

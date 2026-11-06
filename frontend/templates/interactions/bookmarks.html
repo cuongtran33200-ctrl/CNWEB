@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Bài viết đã lưu — SBCB Blog{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">Bài viết đã lưu</h1>
+        <a href="{% url 'accounts:profile' %}" class="btn btn-outline-secondary btn-sm">Hồ sơ cá nhân</a>
+    </div>
+    <div class="row g-4">
+        {% for post in posts %}
+            <div class="col-md-6 col-lg-4">
+                {% include "partials/_post_card.html" %}
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info mb-0">
+                    Bạn chưa lưu bài viết nào. Nhấn biểu tượng <i class="bi bi-bookmark"></i> ở bài viết để lưu lại.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% include "partials/_pagination.html" %}
+</div>
+{% endblock %}

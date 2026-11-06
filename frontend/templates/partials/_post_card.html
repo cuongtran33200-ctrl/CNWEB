@@ -1,0 +1,21 @@
+<article class="post-card h-100">
+    <a href="{{ post.get_absolute_url }}" class="post-card-media">
+        {% if post.thumbnail %}
+            <img src="{{ post.thumbnail.url }}" alt="{{ post.title }}" loading="lazy">
+        {% else %}
+            <div class="post-card-placeholder"><i class="bi bi-journal-richtext"></i></div>
+        {% endif %}
+        <span class="post-card-category">{{ post.category.name }}</span>
+    </a>
+    <div class="post-card-body">
+        <h3 class="post-card-title">
+            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+        </h3>
+        <p class="post-card-excerpt">{{ post.excerpt|truncatechars:130 }}</p>
+        <div class="post-card-meta">
+            <span><i class="bi bi-person"></i>{{ post.author }}</span>
+            <span><i class="bi bi-calendar3"></i>{{ post.published_at|date:"d/m/Y" }}</span>
+            <span class="ms-auto"><i class="bi bi-eye"></i>{{ post.views }}</span>
+        </div>
+    </div>
+</article>

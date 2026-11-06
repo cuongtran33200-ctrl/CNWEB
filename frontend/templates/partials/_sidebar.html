@@ -1,0 +1,47 @@
+<div class="sidebar-widget">
+    <h3 class="widget-title"><i class="bi bi-search"></i>Tìm kiếm</h3>
+    <form method="get" action="{% url 'blog:search' %}" class="widget-search">
+        <input type="search" name="q" placeholder="Nhập từ khoá..." value="{{ request.GET.q|default:'' }}" aria-label="Tìm kiếm">
+        <button type="submit" aria-label="Tìm"><i class="bi bi-arrow-right"></i></button>
+    </form>
+</div>
+
+<div class="sidebar-widget">
+    <h3 class="widget-title"><i class="bi bi-grid"></i>Danh mục</h3>
+    <ul class="category-list">
+        {% for category in categories %}
+            <li>
+                <a href="{{ category.get_absolute_url }}">{{ category.name }}</a>
+                <span class="category-count">{{ category.total }}</span>
+            </li>
+        {% empty %}
+            <li class="text-muted small">Chưa có danh mục.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div class="sidebar-widget">
+    <h3 class="widget-title"><i class="bi bi-tags"></i>Tag phổ biến</h3>
+    <div class="tag-cloud">
+        {% for tag in popular_tags %}
+            <a href="{{ tag.get_absolute_url }}" class="tag-chip">#{{ tag.name }} <span>{{ tag.total }}</span></a>
+        {% empty %}
+            <span class="text-muted small">Chưa có tag.</span>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="sidebar-widget">
+    <h3 class="widget-title"><i class="bi bi-fire"></i>Xem nhiều nhất</h3>
+    {% for post in popular_posts %}
+        <div class="popular-post">
+            <span class="rank">{{ forloop.counter|stringformat:"02d" }}</span>
+            <div>
+                <a href="{{ post.get_absolute_url }}">{{ post.title|truncatechars:64 }}</a>
+                <div class="popular-meta"><i class="bi bi-eye me-1"></i>{{ post.views }} lượt xem</div>
+            </div>
+        </div>
+    {% empty %}
+        <p class="text-muted small mb-0">Chưa có bài viết.</p>
+    {% endfor %}
+</div>

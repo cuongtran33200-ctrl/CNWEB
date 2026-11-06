@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard tác giả{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h1 class="h3 mb-1">Dashboard tác giả</h1>
+            <p class="text-muted mb-0">Xin chào, {{ user }}!</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'author:post_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-1"></i>Viết bài mới
+            </a>
+            <a href="{% url 'blog:post_list' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-box-arrow-up-right me-1"></i>Xem site
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4 dashboard-stats">
+        <div class="col-6 col-lg-2">
+            <div class="card shadow-sm text-center h-100">
+                <div class="card-body">
+                    <div class="fs-3 fw-bold">{{ stats.total }}</div>
+                    <div class="text-muted small">Tổng bài viết</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-2">
+            <div class="card shadow-sm text-center h-100">
+                <div class="card-body">
+                    <div class="fs-3 fw-bold text-success">{{ stats.published }}</div>
+                    <div class="text-muted small">Đã xuất bản</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-2">
+            <div class="card shadow-sm text-center h-100">
+                <div class="card-body">
+                    <div class="fs-3 fw-bold text-secondary">{{ stats.drafts }}</div>
+                    <div class="text-muted small">Bản nháp</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-2">
+            <div class="card shadow-sm text-center h-100">
+                <div class="card-body">
+                    <div class="fs-3 fw-bold text-primary">{{ stats.views }}</div>
+                    <div class="text-muted small">Lượt xem</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-2">
+            <div class="card shadow-sm text-center h-100">
+                <div class="card-body">
+                    <div class="fs-3 fw-bold text-info">{{ stats.comments }}</div>
+                    <div class="text-muted small">Bình luận</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-2">
+            <div class="card shadow-sm text-center h-100">
+                <div class="card-body">
+                    <a href="{% url 'author:post_create' %}" class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center">
+                        <i class="bi bi-pencil-square fs-4"></i>
+                        <span class="small">Tạo bài</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span class="fw-semibold">Bài viết gần đây</span>
+            <a href="{% url 'author:post_list' %}" class="small">Xem tất cả</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Tiêu đề</th>
+                        <th>Danh mục</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end">Lượt xem</th>
+                        <th>Cập nhật</th>
+                        <th class="text-end">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in recent_posts %}
+                        <tr>
+                            <td>
+                                <a href="{{ post.get_absolute_url }}" class="text-reset fw-semibold">{{ post.title|truncatechars:60 }}</a>
+                            </td>
+                            <td>{{ post.category.name }}</td>
+                            <td>
+                                {% if post.status == "published" %}
+                                    <span class="badge text-bg-success">Đã xuất bản</span>
+                                {% else %}
+                                    <span class="badge text-bg-secondary">Nháp</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">{{ post.views }}</td>
+                            <td class="text-muted small">{{ post.updated_at|date:"d/m/Y H:i" }}</td>
+                            <td class="text-end">
+                                <a href="{% url 'author:post_update' post.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                                <a href="{% url 'author:post_delete' post.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="6" class="text-center text-muted py-4">Chưa có bài viết nào. Hãy bắt đầu viết bài đầu tiên!</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

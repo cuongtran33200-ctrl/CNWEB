@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}SBCB Blog — Trang chủ{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container position-relative">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <span class="hero-badge"><i class="bi bi-stars"></i>SBCB Blog — Công nghệ &amp; lập trình</span>
+                <h1 class="hero-title">Khám phá kiến thức<br><span class="text-gradient">công nghệ</span> mỗi ngày</h1>
+                <p class="hero-lead">Bài viết chất lượng về Django, Python, phát triển web và kinh nghiệm thực tế dành cho sinh viên công nghệ thông tin.</p>
+
+                <form class="hero-search" method="get" action="{% url 'blog:search' %}">
+                    <i class="bi bi-search"></i>
+                    <input type="search" name="q" placeholder="Tìm bài viết, chủ đề..." aria-label="Tìm kiếm bài viết">
+                    <button type="submit">Tìm kiếm</button>
+                </form>
+
+                <div class="hero-meta">
+                    <div><strong>{{ stats.posts }}</strong><span>Bài viết</span></div>
+                    <div><strong>{{ stats.categories }}</strong><span>Danh mục</span></div>
+                    <div><strong>{{ stats.views }}</strong><span>Lượt xem</span></div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                {% if hero_post %}
+                    <a href="{{ hero_post.get_absolute_url }}" class="hero-feature">
+                        {% if hero_post.thumbnail %}
+                            <img src="{{ hero_post.thumbnail.url }}" alt="{{ hero_post.title }}">
+                        {% endif %}
+                        <div class="hero-feature-body">
+                            <span class="chip"><i class="bi bi-lightning-charge-fill me-1"></i>Nổi bật</span>
+                            <h2>{{ hero_post.title }}</h2>
+                            <div class="hero-feature-meta">
+                                <i class="bi bi-person me-1"></i>{{ hero_post.author }}
+                                <span class="mx-2">·</span>
+                                <i class="bi bi-calendar3 me-1"></i>{{ hero_post.published_at|date:"d/m/Y" }}
+                            </div>
+                        </div>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    {% if featured_posts|length > 1 %}
+        <section class="mb-5">
+            <div class="section-head">
+                <h2>Bài viết nổi bật</h2>
+                <a href="{% url 'blog:post_list' %}">Xem tất cả <i class="bi bi-arrow-right"></i></a>
+            </div>
+            <div class="row g-4">
+                {% for post in featured_posts|slice:"1:4" %}
+                    <div class="col-md-4">
+                        {% include "partials/_post_card.html" %}
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="section-head">
+                <h2>Bài viết mới nhất</h2>
+                <a href="{% url 'blog:post_list' %}">Xem tất cả <i class="bi bi-arrow-right"></i></a>
+            </div>
+            <div class="row g-4">
+                {% for post in posts %}
+                    <div class="col-md-6">
+                        {% include "partials/_post_card.html" %}
+                    </div>
+                {% empty %}
+                    <div class="col-12">
+                        <div class="alert alert-info mb-0">Chưa có bài viết nào được xuất bản.</div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% include "partials/_pagination.html" %}
+        </div>
+        <aside class="col-lg-4">
+            {% include "partials/_sidebar.html" %}
+        </aside>
+    </div>
+</div>
+{% endblock %}

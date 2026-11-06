@@ -1,0 +1,13 @@
+{% extends "admin/index.html" %}
+
+{% block content %}
+<div class="module" style="margin-bottom: 20px;">
+    <h2>Thống kê hệ thống</h2>
+    <div class="form-row">
+        <a href="{% url 'admin_stats' %}" class="button">Xem dashboard thống kê</a>
+        <a href="{% url 'admin:interactions_comment_changelist' %}?is_approved__exact=0" class="button">Bình luận chờ duyệt</a>
+        <a href="{% url 'admin:blog_post_changelist' %}?status__exact=draft" class="button">Bài viết nháp</a>
+    </div>
+</div>
+{{ block.super }}
+{% endblock %}
