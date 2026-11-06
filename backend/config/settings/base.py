@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from decouple import Config, Csv, RepositoryEnv
@@ -6,9 +7,12 @@ BASE_DIR = Path(__file__).resolve().parents[2]
 ROOT_DIR = BASE_DIR.parent
 
 ENV_FILE = ROOT_DIR / ".env"
-config = Config(RepositoryEnv(str(ENV_FILE))) if ENV_FILE.is_file() else Config()
+config = Config(RepositoryEnv(str(ENV_FILE))) if ENV_FILE.is_file() else Config(os.environ)
 
-SECRET_KEY = config("SECRET_KEY")
+SECRET_KEY = config(
+    "SECRET_KEY",
+    default="django-insecure-build-only-change-this-in-vercel",
+)
 DEBUG = config("DEBUG", default=False, cast=bool)
 ALLOWED_HOSTS = config(
     "ALLOWED_HOSTS", default="127.0.0.1,localhost,.vercel.app", cast=Csv()

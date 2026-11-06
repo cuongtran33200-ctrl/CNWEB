@@ -6,5 +6,5 @@
       "destination": "/api/index"
     }
   ],
-  "buildCommand": "python backend/manage.py collectstatic --noinput"
+  "buildCommand": "DJANGO_SETTINGS_MODULE=config.settings.prod python backend/manage.py collectstatic --noinput"
 }
