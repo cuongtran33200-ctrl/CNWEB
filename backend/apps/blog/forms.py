@@ -30,7 +30,7 @@ class PostForm(forms.ModelForm):
         }
         help_texts = {
             "excerpt": "Để trống để tự sinh từ nội dung.",
-            "thumbnail": "Ảnh JPG/PNG, nên nhỏ hơn 2MB.",
+            "thumbnail": "Ảnh JPG/PNG/WebP, không quá 2 MB.",
         }
 
     def __init__(self, *args, **kwargs):

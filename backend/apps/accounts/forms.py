@@ -3,6 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.exceptions import ValidationError
 
 from .models import User
+from .validators import validate_image_upload
 
 INPUT_CLASS = "form-control"
 
@@ -78,6 +79,7 @@ class ProfileForm(BootstrapFormMixin, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._apply_bootstrap()
+        self.fields["avatar"].validators.append(validate_image_upload)
 
     def clean_email(self):
         email = self.cleaned_data["email"].strip().lower()
