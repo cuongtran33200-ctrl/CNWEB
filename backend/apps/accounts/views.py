@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, PasswordChangeView
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, TemplateView, UpdateView, View
@@ -68,6 +69,7 @@ class PublicProfileView(LoginRequiredMixin, TemplateView):
         return get_object_or_404(User, username=self.kwargs["username"])
 
     def get_context_data(self, **kwargs):
+        self.object = self.get_object()
         context = super().get_context_data(**kwargs)
         profile_user = self.object
         current = self.request.user
@@ -104,7 +106,9 @@ class UserSearchView(LoginRequiredMixin, ListView):
         if not query:
             return User.objects.none()
         return User.objects.filter(
-            username__icontains=query
+            Q(username__icontains=query)
+            | Q(first_name__icontains=query)
+            | Q(last_name__icontains=query)
         ).order_by("username")
 
     def get_context_data(self, **kwargs):
