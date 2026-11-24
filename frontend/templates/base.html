@@ -48,7 +48,7 @@
                     </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'author:dashboard' %}">Quản lý</a>
+                            <a class="nav-link" href="{% url 'author:dashboard' %}">{% if user.is_admin_role %}Quản lý{% else %}Đăng bài{% endif %}</a>
                         </li>
                     {% endif %}
                 </ul>
