@@ -397,7 +397,7 @@ h1, h2, h3, h4, h5 {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    z-index: -2;
+    z-index: 0;
 }
 
 .hero-feature .hero-header-image {
@@ -411,6 +411,12 @@ h1, h2, h3, h4, h5 {
     height: 100%;
 }
 
+.hero-header-carousel {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
 .hero-feature-link {
     color: inherit;
 }
@@ -420,7 +426,7 @@ h1, h2, h3, h4, h5 {
     position: absolute;
     inset: 0;
     background: linear-gradient(180deg, rgba(15, 23, 42, 0) 25%, rgba(15, 23, 42, 0.88) 100%);
-    z-index: -1;
+    z-index: 1;
 }
 
 .hero-feature-body {
@@ -428,6 +434,12 @@ h1, h2, h3, h4, h5 {
     inset: auto 0 0 0;
     padding: 1.75rem;
     color: #fff;
+    z-index: 2;
+}
+
+.hero-header-carousel .carousel-control-prev,
+.hero-header-carousel .carousel-control-next {
+    z-index: 3;
 }
 
 .chip {
