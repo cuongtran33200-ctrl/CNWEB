@@ -137,11 +137,11 @@ class AuthorPermissionTests(TestCase):
             role=User.Role.AUTHOR,
         )
 
-    def test_reader_cannot_access_author_dashboard(self):
+    def test_reader_can_access_contributor_dashboard(self):
         self.client.force_login(self.reader)
         response = self.client.get(reverse("author:dashboard"))
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
 
     def test_author_can_access_dashboard(self):
         self.client.force_login(self.author)

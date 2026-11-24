@@ -9,7 +9,7 @@ from django.views.generic import (
     UpdateView,
 )
 
-from apps.accounts.permissions import AuthorRequiredMixin
+from apps.accounts.permissions import ContributorRequiredMixin
 from apps.interactions.models import Comment
 
 from .forms import PostForm
@@ -23,7 +23,7 @@ def visible_posts(user):
     return queryset.filter(author=user)
 
 
-class DashboardView(AuthorRequiredMixin, TemplateView):
+class DashboardView(ContributorRequiredMixin, TemplateView):
     template_name = "author/dashboard.html"
 
     def get_context_data(self, **kwargs):
@@ -42,7 +42,7 @@ class DashboardView(AuthorRequiredMixin, TemplateView):
         return context
 
 
-class MyPostListView(AuthorRequiredMixin, ListView):
+class MyPostListView(ContributorRequiredMixin, ListView):
     template_name = "author/post_list.html"
     context_object_name = "posts"
     paginate_by = 10
@@ -61,7 +61,7 @@ class MyPostListView(AuthorRequiredMixin, ListView):
         return context
 
 
-class PostCreateView(AuthorRequiredMixin, CreateView):
+class PostCreateView(ContributorRequiredMixin, CreateView):
     model = Post
     form_class = PostForm
     template_name = "author/post_form.html"
@@ -69,11 +69,12 @@ class PostCreateView(AuthorRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        messages.success(self.request, "Đã tạo bài viết mới.")
+        form.instance.status = Post.Status.DRAFT
+        messages.success(self.request, "Đã gửi bài viết. Bài viết đang chờ quản trị viên kiểm duyệt.")
         return super().form_valid(form)
 
 
-class PostUpdateView(AuthorRequiredMixin, UpdateView):
+class PostUpdateView(ContributorRequiredMixin, UpdateView):
     model = Post
     form_class = PostForm
     template_name = "author/post_form.html"
@@ -83,11 +84,12 @@ class PostUpdateView(AuthorRequiredMixin, UpdateView):
         return visible_posts(self.request.user)
 
     def form_valid(self, form):
-        messages.success(self.request, "Đã cập nhật bài viết.")
+        form.instance.status = Post.Status.DRAFT
+        messages.success(self.request, "Đã cập nhật bài viết và gửi lại chờ kiểm duyệt.")
         return super().form_valid(form)
 
 
-class PostDeleteView(AuthorRequiredMixin, DeleteView):
+class PostDeleteView(ContributorRequiredMixin, DeleteView):
     model = Post
     template_name = "author/post_confirm_delete.html"
     success_url = reverse_lazy("author:post_list")

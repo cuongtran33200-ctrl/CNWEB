@@ -13,7 +13,6 @@ class PostForm(forms.ModelForm):
             "thumbnail",
             "excerpt",
             "content",
-            "status",
         )
         widgets = {
             "excerpt": forms.Textarea(attrs={"rows": 3}),

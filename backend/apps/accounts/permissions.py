@@ -12,6 +12,10 @@ class AuthorRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
         return super().handle_no_permission()
 
 
+class ContributorRequiredMixin(LoginRequiredMixin):
+    """Allow every authenticated user to submit content for moderation."""
+
+
 class AdminRoleRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_admin_role
