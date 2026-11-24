@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, TemplateView, UpdateView
+from django.views.generic import CreateView, ListView, TemplateView, UpdateView, View
 
 from .forms import LoginForm, ProfileForm, RegisterForm
 from .models import Friendship, User
@@ -78,22 +78,42 @@ class PublicProfileView(LoginRequiredMixin, TemplateView):
             ).first() or Friendship.objects.filter(
                 requester=profile_user, recipient=current
             ).first()
+        friends = User.objects.filter(
+            sent_friend_requests__recipient=profile_user,
+            sent_friend_requests__status=Friendship.Status.ACCEPTED,
+        ) | User.objects.filter(
+            received_friend_requests__requester=profile_user,
+            received_friend_requests__status=Friendship.Status.ACCEPTED,
+        )
         context.update({
             "profile_user": profile_user,
             "friendship": friendship,
             "is_own_profile": current == profile_user,
-            "friends": User.objects.filter(
-                sent_friend_requests__recipient=profile_user,
-                sent_friend_requests__status=Friendship.Status.ACCEPTED,
-            ) | User.objects.filter(
-                received_friend_requests__requester=profile_user,
-                received_friend_requests__status=Friendship.Status.ACCEPTED,
-            ),
+            "friends": friends.distinct(),
         })
         return context
 
 
-class FriendRequestView(LoginRequiredMixin, UpdateView):
+class UserSearchView(LoginRequiredMixin, ListView):
+    template_name = "accounts/user_search.html"
+    context_object_name = "users"
+    paginate_by = 12
+
+    def get_queryset(self):
+        query = self.request.GET.get("q", "").strip()
+        if not query:
+            return User.objects.none()
+        return User.objects.filter(
+            username__icontains=query
+        ).order_by("username")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["query"] = self.request.GET.get("q", "").strip()
+        return context
+
+
+class FriendRequestView(LoginRequiredMixin, View):
     http_method_names = ["post"]
 
     def post(self, request, username):
@@ -114,10 +134,14 @@ class FriendRequestView(LoginRequiredMixin, UpdateView):
         elif not friendship:
             Friendship.objects.create(requester=request.user, recipient=recipient)
             messages.success(request, "Đã gửi lời mời kết bạn.")
+        elif friendship.status == Friendship.Status.REJECTED:
+            friendship.status = Friendship.Status.PENDING
+            friendship.save(update_fields=["status", "updated_at"])
+            messages.success(request, "Đã gửi lại lời mời kết bạn.")
         return redirect("accounts:public_profile", username=username)
 
 
-class FriendResponseView(LoginRequiredMixin, UpdateView):
+class FriendResponseView(LoginRequiredMixin, View):
     http_method_names = ["post"]
 
     def post(self, request, pk, action):

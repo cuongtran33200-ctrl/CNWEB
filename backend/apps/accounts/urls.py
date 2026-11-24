@@ -8,6 +8,7 @@ from .views import (
     PublicProfileView,
     FriendRequestView,
     FriendResponseView,
+    UserSearchView,
     RegisterView,
 )
 from django.contrib.auth.views import LogoutView
@@ -20,6 +21,7 @@ urlpatterns = [
     path("register/", RegisterView.as_view(), name="register"),
     path("profile/", ProfileView.as_view(), name="profile"),
     path("users/<str:username>/", PublicProfileView.as_view(), name="public_profile"),
+    path("users/", UserSearchView.as_view(), name="user_search"),
     path("users/<str:username>/friend/", FriendRequestView.as_view(), name="friend_request"),
     path("friend-requests/<int:pk>/<str:action>/", FriendResponseView.as_view(), name="friend_response"),
     path(
