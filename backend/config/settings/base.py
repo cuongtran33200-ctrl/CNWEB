@@ -109,7 +109,7 @@ STATIC_URL = "static/"
 STATICFILES_DIRS = [ROOT_DIR / "frontend" / "static"]
 STATIC_ROOT = ROOT_DIR / "staticfiles"
 
-MEDIA_URL = "media/"
+MEDIA_URL = "/media/"
 MEDIA_ROOT = ROOT_DIR / "media"
 
 STORAGES = {

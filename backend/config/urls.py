@@ -37,5 +37,5 @@ urlpatterns = [
     path("", HomeView.as_view(), name="home"),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Serve uploaded images in local development and on the demo deployment.
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
