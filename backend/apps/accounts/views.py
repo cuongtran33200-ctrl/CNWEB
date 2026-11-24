@@ -1,12 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, PasswordChangeView
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, TemplateView, UpdateView
 
 from .forms import LoginForm, ProfileForm, RegisterForm
-from .models import User
+from .models import Friendship, User
 
 
 class RegisterView(CreateView):
@@ -49,6 +49,89 @@ class ProfileView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, "Cập nhật hồ sơ thành công.")
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["friend_requests"] = Friendship.objects.filter(
+            recipient=self.request.user,
+            status=Friendship.Status.PENDING,
+        ).select_related("requester")
+        return context
+
+
+class PublicProfileView(LoginRequiredMixin, TemplateView):
+    model = User
+    template_name = "accounts/public_profile.html"
+    http_method_names = ["get"]
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(User, username=self.kwargs["username"])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        profile_user = self.object
+        current = self.request.user
+        friendship = None
+        if current != profile_user:
+            friendship = Friendship.objects.filter(
+                requester=current, recipient=profile_user
+            ).first() or Friendship.objects.filter(
+                requester=profile_user, recipient=current
+            ).first()
+        context.update({
+            "profile_user": profile_user,
+            "friendship": friendship,
+            "is_own_profile": current == profile_user,
+            "friends": User.objects.filter(
+                sent_friend_requests__recipient=profile_user,
+                sent_friend_requests__status=Friendship.Status.ACCEPTED,
+            ) | User.objects.filter(
+                received_friend_requests__requester=profile_user,
+                received_friend_requests__status=Friendship.Status.ACCEPTED,
+            ),
+        })
+        return context
+
+
+class FriendRequestView(LoginRequiredMixin, UpdateView):
+    http_method_names = ["post"]
+
+    def post(self, request, username):
+        recipient = get_object_or_404(User, username=username)
+        if recipient == request.user:
+            messages.error(request, "Bạn không thể kết bạn với chính mình.")
+            return redirect("accounts:public_profile", username=username)
+        friendship = Friendship.objects.filter(
+            requester=request.user, recipient=recipient
+        ).first()
+        reverse_request = Friendship.objects.filter(
+            requester=recipient, recipient=request.user
+        ).first()
+        if reverse_request and reverse_request.status == Friendship.Status.PENDING:
+            reverse_request.status = Friendship.Status.ACCEPTED
+            reverse_request.save(update_fields=["status", "updated_at"])
+            messages.success(request, "Hai bạn đã trở thành bạn bè.")
+        elif not friendship:
+            Friendship.objects.create(requester=request.user, recipient=recipient)
+            messages.success(request, "Đã gửi lời mời kết bạn.")
+        return redirect("accounts:public_profile", username=username)
+
+
+class FriendResponseView(LoginRequiredMixin, UpdateView):
+    http_method_names = ["post"]
+
+    def post(self, request, pk, action):
+        friendship = get_object_or_404(
+            Friendship, pk=pk, recipient=request.user, status=Friendship.Status.PENDING
+        )
+        if action == "accept":
+            friendship.status = Friendship.Status.ACCEPTED
+            messages.success(request, "Đã chấp nhận lời mời kết bạn.")
+        else:
+            friendship.status = Friendship.Status.REJECTED
+            messages.info(request, "Đã từ chối lời mời kết bạn.")
+        friendship.save(update_fields=["status", "updated_at"])
+        return redirect("accounts:profile")
 
 
 class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):

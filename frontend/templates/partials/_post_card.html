@@ -14,7 +14,7 @@
         </h3>
         <p class="post-card-excerpt">{{ post.excerpt|truncatechars:130 }}</p>
         <div class="post-card-meta">
-            <span><i class="bi bi-person"></i>{{ post.author }}</span>
+            <span><i class="bi bi-person"></i><a href="{% url 'accounts:public_profile' post.author.username %}">{{ post.author }}</a></span>
             <span><i class="bi bi-calendar3"></i>{{ post.published_at|date:"d/m/Y" }}</span>
             <span class="ms-auto"><i class="bi bi-eye"></i>{{ post.views }}</span>
         </div>

@@ -36,6 +36,20 @@
                     </form>
                 </div>
             </div>
+            <div class="card shadow-sm mt-3">
+                <div class="card-header"><strong>Lời mời kết bạn</strong></div>
+                <div class="list-group list-group-flush">
+                    {% for request in friend_requests %}
+                        <div class="list-group-item">
+                            <a href="{% url 'accounts:public_profile' request.requester.username %}">@{{ request.requester.username }}</a>
+                            <div class="mt-2">
+                                <form method="post" action="{% url 'accounts:friend_response' request.pk 'accept' %}" class="d-inline">{% csrf_token %}<button class="btn btn-sm btn-success">Chấp nhận</button></form>
+                                <form method="post" action="{% url 'accounts:friend_response' request.pk 'reject' %}" class="d-inline">{% csrf_token %}<button class="btn btn-sm btn-outline-danger">Từ chối</button></form>
+                            </div>
+                        </div>
+                    {% empty %}<div class="list-group-item text-muted">Không có lời mời mới.</div>{% endfor %}
+                </div>
+            </div>
         </div>
         <div class="col-lg-8">
             <div class="card shadow-sm">

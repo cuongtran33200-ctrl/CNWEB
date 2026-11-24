@@ -27,7 +27,7 @@
             </div>
             <div class="flex-grow-1">
                 <div class="d-flex justify-content-between align-items-start">
-                    <strong>{{ comment.user }}</strong>
+                    <strong><a href="{% url 'accounts:public_profile' comment.user.username %}">{{ comment.user }}</a></strong>
                     <small class="text-muted">{{ comment.created_at|date:"d/m/Y H:i" }}</small>
                 </div>
                 <p class="mb-1">{{ comment.content|linebreaksbr }}</p>

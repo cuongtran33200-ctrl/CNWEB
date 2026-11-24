@@ -32,3 +32,33 @@ class User(AbstractUser):
     @property
     def is_admin_role(self):
         return self.role == self.Role.ADMIN or self.is_superuser
+
+
+class Friendship(models.Model):
+    class Status(models.TextChoices):
+        PENDING = "pending", "Đang chờ"
+        ACCEPTED = "accepted", "Đã kết bạn"
+        REJECTED = "rejected", "Đã từ chối"
+
+    requester = models.ForeignKey(
+        User, related_name="sent_friend_requests", on_delete=models.CASCADE
+    )
+    recipient = models.ForeignKey(
+        User, related_name="received_friend_requests", on_delete=models.CASCADE
+    )
+    status = models.CharField(
+        "Trạng thái", max_length=10, choices=Status.choices, default=Status.PENDING
+    )
+    created_at = models.DateTimeField("Ngày gửi", auto_now_add=True)
+    updated_at = models.DateTimeField("Ngày cập nhật", auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=("requester", "recipient"), name="unique_friend_request"
+            )
+        ]
+        ordering = ["-updated_at"]
+
+    def __str__(self):
+        return f"{self.requester} -> {self.recipient} ({self.status})"
