@@ -29,6 +29,56 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+.author-form-card {
+    background: linear-gradient(145deg, #151923 0%, #10131b 100%);
+    border: 1px solid #2b3142;
+    color: var(--ink);
+}
+
+.author-form-card .form-label,
+.author-form-card legend,
+.author-form-card .form-text,
+.author-form-card .asteriskField {
+    color: var(--ink);
+}
+
+.author-form-card input:not([type="checkbox"]):not([type="radio"]),
+.author-form-card select,
+.author-form-card textarea {
+    background-color: #0d1017;
+    border-color: #343b50;
+    color: var(--ink);
+}
+
+.author-form-card input:focus,
+.author-form-card select:focus,
+.author-form-card textarea:focus {
+    background-color: #111622;
+    border-color: var(--brand);
+    color: var(--ink);
+    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.2);
+}
+
+.author-form-card select option {
+    background: #151923;
+    color: var(--ink);
+}
+
+.author-form-card .form-check-label {
+    color: var(--muted);
+}
+
+.author-category-alert {
+    background: rgba(245, 158, 11, 0.12);
+    border-color: rgba(245, 158, 11, 0.35);
+    color: #fbd38d;
+}
+
+.author-category-alert a {
+    color: #fde68a;
+    font-weight: 700;
+}
+
 main {
     flex: 1;
 }

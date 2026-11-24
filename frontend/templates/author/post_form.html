@@ -13,9 +13,15 @@
         </ol>
     </nav>
 
-    <div class="card shadow-sm">
+    <div class="card shadow-sm author-form-card">
         <div class="card-body p-4">
             <h1 class="h4 mb-4">{% if object %}Sửa bài viết{% else %}Viết bài mới{% endif %}</h1>
+            {% if not form.category.field.queryset.exists %}
+                <div class="alert alert-warning author-category-alert">
+                    Chưa có danh mục để chọn. Vui lòng nhờ quản trị viên thêm danh mục trong
+                    <a href="{% url 'admin:blog_category_add' %}">trang quản trị</a> trước khi tạo bài viết.
+                </div>
+            {% endif %}
             <form method="post" enctype="multipart/form-data" novalidate>
                 {% csrf_token %}
                 {{ form|crispy }}
