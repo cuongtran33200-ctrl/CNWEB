@@ -405,6 +405,12 @@ h1, h2, h3, h4, h5 {
     object-position: center;
 }
 
+.hero-header-carousel,
+.hero-header-carousel .carousel-inner,
+.hero-header-carousel .carousel-item {
+    height: 100%;
+}
+
 .hero-feature-link {
     color: inherit;
 }

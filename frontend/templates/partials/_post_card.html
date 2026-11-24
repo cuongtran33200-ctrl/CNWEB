@@ -1,7 +1,8 @@
+{% load static %}
 <article class="post-card h-100">
     <a href="{{ post.get_absolute_url }}" class="post-card-media">
         {% if post.thumbnail %}
-            <img src="{{ post.thumbnail.url }}" alt="{{ post.title }}" loading="lazy">
+            <img src="{{ post.thumbnail.url }}" alt="{{ post.title }}" loading="lazy" onerror="this.onerror=null;this.src='{% static 'img/images.jpg' %}';">
         {% else %}
             <div class="post-card-placeholder"><i class="bi bi-journal-richtext"></i></div>
         {% endif %}

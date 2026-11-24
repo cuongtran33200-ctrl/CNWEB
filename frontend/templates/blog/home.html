@@ -26,7 +26,28 @@
             </div>
             <div class="col-lg-6">
                 <div class="hero-feature">
-                    <img class="hero-header-image" src="{% static 'img/header.jpg' %}" alt="SBCB Blog">
+                    <div id="homepageHeader" class="carousel slide hero-header-carousel" data-bs-ride="carousel">
+                        <div class="carousel-inner h-100">
+                            <div class="carousel-item h-100 active">
+                                <img class="hero-header-image" src="{% static 'img/header.jpg' %}" alt="Ảnh giới thiệu SBCB Blog">
+                            </div>
+                            <div class="carousel-item h-100">
+                                <img class="hero-header-image" src="{% static 'img/KV.jpg' %}" alt="Ảnh giới thiệu SBCB Blog">
+                            </div>
+                            <div class="carousel-item h-100">
+                                <img class="hero-header-image" src="{% static 'img/images (2).jpg' %}" alt="Ảnh giới thiệu SBCB Blog">
+                            </div>
+                            <div class="carousel-item h-100">
+                                <img class="hero-header-image" src="{% static 'img/images (3).jpg' %}" alt="Ảnh giới thiệu SBCB Blog">
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#homepageHeader" data-bs-slide="prev" aria-label="Ảnh trước">
+                            <span class="carousel-control-prev-icon"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#homepageHeader" data-bs-slide="next" aria-label="Ảnh tiếp theo">
+                            <span class="carousel-control-next-icon"></span>
+                        </button>
+                    </div>
                     {% if hero_post %}
                         <div class="hero-feature-body">
                             <span class="chip"><i class="bi bi-lightning-charge-fill me-1"></i>Nổi bật</span>

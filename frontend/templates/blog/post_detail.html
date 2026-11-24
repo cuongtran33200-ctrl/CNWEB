@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}{{ post.title }} — SBCB Blog{% endblock %}
 {% block meta_description %}{{ post.excerpt }}{% endblock %}
@@ -64,7 +65,7 @@
 
                 {% if post.thumbnail %}
                     <figure class="article-cover">
-                        <img src="{{ post.thumbnail.url }}" alt="{{ post.title }}">
+                        <img src="{{ post.thumbnail.url }}" alt="{{ post.title }}" onerror="this.onerror=null;this.src='{% static 'img/images.jpg' %}';">
                     </figure>
                 {% endif %}
 
