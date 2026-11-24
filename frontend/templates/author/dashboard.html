@@ -117,5 +117,55 @@
             </table>
         </div>
     </div>
+
+    {% if user.is_admin_role %}
+        <div class="row g-4 mt-1">
+            <div class="col-lg-7">
+                <div class="card shadow-sm">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold"><i class="bi bi-file-earmark-check me-2"></i>Bài viết chờ duyệt</span>
+                        <span class="badge text-bg-warning">{{ pending_posts|length }}</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <tbody>
+                                {% for post in pending_posts %}
+                                    <tr>
+                                        <td><strong>{{ post.title|truncatechars:42 }}</strong><br><small class="text-muted">{{ post.author }} · {{ post.category.name }}</small></td>
+                                        <td class="text-end text-nowrap">
+                                            <form method="post" action="{% url 'author:approve_post' post.pk %}" class="d-inline">{% csrf_token %}<button class="btn btn-sm btn-success">Duyệt</button></form>
+                                            <form method="post" action="{% url 'author:reject_post' post.pk %}" class="d-inline">{% csrf_token %}<button class="btn btn-sm btn-outline-danger">Từ chối</button></form>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr><td class="text-muted text-center py-3">Không có bài viết chờ duyệt.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="card shadow-sm">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold"><i class="bi bi-chat-square-text me-2"></i>Bình luận chờ duyệt</span>
+                        <span class="badge text-bg-warning">{{ pending_comments|length }}</span>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        {% for comment in pending_comments %}
+                            <div class="list-group-item">
+                                <div class="small mb-2"><strong>{{ comment.user }}</strong> trên {{ comment.post.title|truncatechars:28 }}</div>
+                                <p class="small text-muted mb-2">{{ comment.content|truncatechars:100 }}</p>
+                                <form method="post" action="{% url 'author:approve_comment' comment.pk %}" class="d-inline">{% csrf_token %}<button class="btn btn-sm btn-success">Duyệt</button></form>
+                                <form method="post" action="{% url 'author:reject_comment' comment.pk %}" class="d-inline">{% csrf_token %}<button class="btn btn-sm btn-outline-danger">Từ chối</button></form>
+                            </div>
+                        {% empty %}
+                            <div class="list-group-item text-muted text-center py-3">Không có bình luận chờ duyệt.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

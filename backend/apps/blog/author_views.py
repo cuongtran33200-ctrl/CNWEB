@@ -1,5 +1,8 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Sum
+from django.shortcuts import get_object_or_404, redirect
+from django.views.decorators.http import require_POST
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -39,6 +42,13 @@ class DashboardView(ContributorRequiredMixin, TemplateView):
             ).count(),
         }
         context["recent_posts"] = posts.order_by("-updated_at")[:5]
+        if self.request.user.is_admin_role:
+            context["pending_posts"] = Post.objects.filter(
+                status=Post.Status.DRAFT
+            ).select_related("author", "category").order_by("-updated_at")
+            context["pending_comments"] = Comment.objects.filter(
+                is_approved=False
+            ).select_related("user", "post").order_by("-created_at")
         return context
 
 
@@ -100,3 +110,46 @@ class PostDeleteView(ContributorRequiredMixin, DeleteView):
     def form_valid(self, form):
         messages.success(self.request, "Đã xoá bài viết.")
         return super().form_valid(form)
+
+
+def admin_only(view):
+    return login_required(user_passes_test(lambda user: user.is_admin_role)(view))
+
+
+@admin_only
+@require_POST
+def approve_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    post.status = Post.Status.PUBLISHED
+    post.save(update_fields=["status", "published_at", "updated_at"])
+    messages.success(request, f'Đã duyệt bài viết "{post.title}".')
+    return redirect("author:dashboard")
+
+
+@admin_only
+@require_POST
+def reject_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    post.status = Post.Status.DRAFT
+    post.save(update_fields=["status", "updated_at"])
+    messages.info(request, f'Đã từ chối bài viết "{post.title}".')
+    return redirect("author:dashboard")
+
+
+@admin_only
+@require_POST
+def approve_comment(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    comment.is_approved = True
+    comment.save(update_fields=["is_approved"])
+    messages.success(request, "Đã duyệt bình luận.")
+    return redirect("author:dashboard")
+
+
+@admin_only
+@require_POST
+def reject_comment(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    comment.delete()
+    messages.info(request, "Đã từ chối và xóa bình luận.")
+    return redirect("author:dashboard")

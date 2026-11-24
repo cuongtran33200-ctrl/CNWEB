@@ -75,7 +75,7 @@
                                         {{ user.username|first|upper }}
                                     {% endif %}
                                 </span>
-                                <span class="d-none d-lg-inline">{{ user }}</span>
+                                <span class="d-none d-lg-inline">Xin chào, {{ user.get_full_name|default:user.username }}</span>
                             </a>
                         </li>
                         <li class="nav-item">

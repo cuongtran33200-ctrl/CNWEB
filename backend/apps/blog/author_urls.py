@@ -18,4 +18,8 @@ urlpatterns = [
         author_views.PostDeleteView.as_view(),
         name="post_delete",
     ),
+    path("moderation/posts/<int:pk>/approve/", author_views.approve_post, name="approve_post"),
+    path("moderation/posts/<int:pk>/reject/", author_views.reject_post, name="reject_post"),
+    path("moderation/comments/<int:pk>/approve/", author_views.approve_comment, name="approve_comment"),
+    path("moderation/comments/<int:pk>/reject/", author_views.reject_comment, name="reject_comment"),
 ]
