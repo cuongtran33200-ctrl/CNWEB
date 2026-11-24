@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}SBCB Blog — Trang chủ{% endblock %}
 
@@ -24,22 +25,22 @@
                 </div>
             </div>
             <div class="col-lg-6">
-                {% if hero_post %}
-                    <a href="{{ hero_post.get_absolute_url }}" class="hero-feature">
-                        {% if hero_post.thumbnail %}
-                            <img src="{{ hero_post.thumbnail.url }}" alt="{{ hero_post.title }}">
-                        {% endif %}
+                <div class="hero-feature">
+                    <img class="hero-header-image" src="{% static 'img/header.jpg' %}" alt="SBCB Blog">
+                    {% if hero_post %}
                         <div class="hero-feature-body">
                             <span class="chip"><i class="bi bi-lightning-charge-fill me-1"></i>Nổi bật</span>
-                            <h2>{{ hero_post.title }}</h2>
+                            <a href="{{ hero_post.get_absolute_url }}" class="hero-feature-link">
+                                <h2>{{ hero_post.title }}</h2>
+                            </a>
                             <div class="hero-feature-meta">
                                 <i class="bi bi-person me-1"></i>{{ hero_post.author }}
                                 <span class="mx-2">·</span>
                                 <i class="bi bi-calendar3 me-1"></i>{{ hero_post.published_at|date:"d/m/Y" }}
                             </div>
                         </div>
-                    </a>
-                {% endif %}
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
