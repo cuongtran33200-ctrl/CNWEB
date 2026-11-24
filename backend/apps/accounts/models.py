@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from cloudinary.models import CloudinaryField
 
 
 class User(AbstractUser):
@@ -9,9 +10,7 @@ class User(AbstractUser):
         ADMIN = "admin", "Quản trị"
 
     email = models.EmailField("Email", unique=True)
-    avatar = models.ImageField(
-        "Ảnh đại diện", upload_to="avatars/%Y/%m/", blank=True
-    )
+    avatar = CloudinaryField("Ảnh đại diện", blank=True, null=True)
     bio = models.TextField("Giới thiệu", max_length=500, blank=True)
     role = models.CharField(
         "Vai trò", max_length=10, choices=Role.choices, default=Role.READER
