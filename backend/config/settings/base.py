@@ -117,6 +117,12 @@ STORAGES = {
     "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
 }
 
+if os.getenv("CLOUDINARY_URL"):
+    INSTALLED_APPS += ["cloudinary", "cloudinary_storage"]
+    STORAGES["default"] = {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage"
+    }
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "accounts.User"
